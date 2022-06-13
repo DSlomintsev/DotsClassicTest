@@ -24,7 +24,6 @@ namespace DotsClassicTest
             CoroutineRunner = gameObject.AddComponent<CoroutineRunner>();
             Spawner = new ResourceSpawner();
 
-            //add game manager which handle what to do with board on top(like fill, clear etc)
             var playerInput = Spawner.Spawn<PlayerInput>(PrefabConstants.PlayerInput);
 
             _board = InitBoard(playerInput);

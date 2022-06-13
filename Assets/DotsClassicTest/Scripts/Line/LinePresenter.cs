@@ -68,7 +68,5 @@ namespace DotsClassicTest.Line
             View.RemoveLastPoint();
             OnPointerPositionUpdate(_input.PointerPosition.Value);
         }
-        //public Stack<CellData> cells;
-        //public LineRenderer lineRenderer { get; set; }
     }
 }
