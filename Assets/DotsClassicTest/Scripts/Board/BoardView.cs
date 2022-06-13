@@ -13,7 +13,7 @@ namespace DotsClassicTest.Board
     public class BoardView : MonoBehaviour
     {
         private readonly Vector3 _defaultCellScale = Vector3.one * .7f;
-        private const float DestroyAnimCellScale = 1.2f;
+        private const float DestroyAnimCellScale = 1f;
         private const float DestroyAnimCellFade = 0f;
         private const float DestroyAnimDuration = .3f;
         private const float FallAnimDuration = 1f;
@@ -57,6 +57,27 @@ namespace DotsClassicTest.Board
                 var interactable = cell.gameObject.AddComponent<Interactable>();
                 interactable.Init(action);
             }
+        }
+        
+        private List<Tweener> _squareHighlight = new ();
+
+        public void Highlight(Color color)
+        {
+            var likeColorCells = _cells.FindAll(cell => cell.Color == color);
+            likeColorCells.ForEach(cell =>
+            {
+                var scaleAnim = cell.transform.DOScale(DestroyAnimCellScale, .5f);
+                scaleAnim.SetLoops(-1, LoopType.Yoyo);
+                scaleAnim.Play();
+                _squareHighlight.Add(scaleAnim);
+            });
+        }
+
+        public void RemoveHighlight()
+        {
+            _squareHighlight.ForEach(tweener => { tweener.Kill(); });
+            _squareHighlight.Clear();
+            _cells.ForEach(cell => { cell.transform.localScale = _defaultCellScale; });
         }
 
         public void DestroyCellAnim(int id, int row, int col)

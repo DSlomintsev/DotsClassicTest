@@ -116,8 +116,27 @@ namespace DotsClassicTest.Board
                     _preLast = _selectedCells.Peek();
                     _selectedCells.Push(tempCell);
 
-                    _isSquare = IsSquare();
+                    CheckSquare();
                 }
+            }
+        }
+        
+        private void CheckSquare()
+        {
+            var isSquare = IsSquare();
+                    
+            if (_isSquare != isSquare)
+            {
+                _isSquare = isSquare;
+                if (isSquare)
+                {
+                    View.Highlight(_selectedCells.Peek().Color.ToColor());
+                }
+                else
+                {
+                    View.RemoveHighlight();
+                }
+                    
             }
         }
 
@@ -129,12 +148,9 @@ namespace DotsClassicTest.Board
         private void OnReplenish()
         {
             OnEndSelection();
-            for (var row = 0; row < Config.Rows; row++)
+            foreach (var cellData in Model.Cells)
             {
-                for (var col = 0; col < Config.Cols; col++)
-                {
-                    Model.Cells[row, col].State = CellState.DESTROY;
-                }    
+                cellData.State = CellState.DESTROY;
             }
             DestroyCells();
             ReFillCells();
@@ -180,16 +196,15 @@ namespace DotsClassicTest.Board
                     BoardUtils.MarkSquaredCellsToDestroy(Model.Cells, _selectedCells.Peek().Color);
                 }
                 
-                while (_selectedCells.Count > 0)
+                foreach (var cell in _selectedCells)
                 {
-                    var cellData = _selectedCells.Pop();
-                    cellData.State = CellState.DESTROY;
+                    cell.State = CellState.DESTROY;
                 }
             }
             
             _selectedCells.Clear();
             _preLast = null;
-            _isSquare = false;
+            CheckSquare();
 
             DestroyCells();
             ReFillCells();
@@ -199,16 +214,14 @@ namespace DotsClassicTest.Board
         private void DestroyCells()
         {
             var cells = Model.Cells;
-            for (var row = Config.Rows-1; row >= 0; row--)
+
+            foreach (var cell in cells)
             {
-                for (var col = 0; col < Config.Cols; col++)
+                if (cell.State == CellState.DESTROY)
                 {
-                    if (cells[row, col].State == CellState.DESTROY)
-                    {
-                        var cellId = BoardUtils.GetCellId(row, col, Config);
-                        View.DestroyCellAnim(cellId, row,col);
-                        Model.Cells[row, col] = null;
-                    }
+                    var cellId = BoardUtils.GetCellId(cell.Row, cell.Col, Config);
+                    View.DestroyCellAnim(cellId, cell.Row, cell.Col);
+                    Model.Cells[cell.Row, cell.Col] = null;
                 }
             }
         }
