@@ -221,7 +221,7 @@ namespace DotsClassicTest.Board
                 for (var row = Config.Rows - 1; row >= 0; row--)
                 {
                     var cell = cells[row, col];
-                    if (cell == null || cell.State == CellState.DESTROY)
+                    if (cell == null)
                     {
                         var upperFreeCell = BoardUtils.FindFreeUpperCell(Model.Cells, row - 1, col);
 
@@ -245,8 +245,6 @@ namespace DotsClassicTest.Board
                         var cellId = BoardUtils.GetCellId(row, col, Config);
                         View.SetCellColor(cellId, upperFreeCell.Color.ToColor());
                         View.FallCellAnim(cellId, startRow, row, col);
-                        //find free upper, if nope - create falling
-                        //check upper - if ok - move upper to current pos
                     }
                 }
             }
