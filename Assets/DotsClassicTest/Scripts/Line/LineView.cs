@@ -29,8 +29,5 @@ namespace DotsClassicTest.Line
         {
             lineRenderer.SetPosition(lineRenderer.positionCount-1,pointerPos);
         }
-        
-        //public Stack<CellData> cells;
-        //public LineRenderer lineRenderer { get; set; }
     }
 }
