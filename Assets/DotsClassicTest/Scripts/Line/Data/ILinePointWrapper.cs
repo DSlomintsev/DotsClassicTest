@@ -1,9 +1,7 @@
 using System;
-using DotsClassicTest.Cell;
-using DotsClassicTest.Utils.Data;
 using UnityEngine;
 
-namespace DotsClassicTest.Line
+namespace DotsClassicTest.Line.Data
 {
     public interface ILinePointWrapper
     {

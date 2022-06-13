@@ -3,7 +3,7 @@ using DotsClassicTest.Utils.Data;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace DotsClassicTest.Line
+namespace DotsClassicTest.Line.Data
 {
     public class LineInput : IDisposable
     {

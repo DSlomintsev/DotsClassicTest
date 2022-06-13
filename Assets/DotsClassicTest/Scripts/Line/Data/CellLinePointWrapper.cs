@@ -1,5 +1,6 @@
 using System;
 using DotsClassicTest.Cell;
+using DotsClassicTest.Line.Data;
 using DotsClassicTest.Utils;
 using DotsClassicTest.Utils.Data;
 using UnityEngine;

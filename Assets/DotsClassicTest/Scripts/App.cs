@@ -1,6 +1,7 @@
 using DotsClassicTest.Board;
 using DotsClassicTest.Constants;
 using DotsClassicTest.Line;
+using DotsClassicTest.Line.Data;
 using DotsClassicTest.Spawner;
 using DotsClassicTest.Utils;
 using UnityEngine;
