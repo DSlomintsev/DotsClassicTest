@@ -1,27 +1,55 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using DG.Tweening.Core;
 using DotsClassicTest.Cell;
 using DotsClassicTest.Constants;
 using DotsClassicTest.Interactables;
-using DotsClassicTest.Line;
-using DotsClassicTest.Utils;
 using UnityEngine;
+using UnityEngine.Pool;
 
 
 namespace DotsClassicTest.Board
 {
     public class BoardView : MonoBehaviour
     {
-        private List<CellView> _cells = new ();
+        private readonly Vector3 _defaultCellScale = Vector3.one * .7f;
+        private const float DestroyAnimCellScale = 1.2f;
+        private const float DestroyAnimCellFade = 0f;
+        private const float DestroyAnimDuration = .3f;
+        private const float FallAnimDuration = 1f;
+        
+        private readonly ObjectPool<CellView> _pool = new(createFunc: CreateCellView, actionOnRelease: ActionOnRelease);
 
-        public void CreateCell(CellData data, Action action)
+        private static void ActionOnRelease(CellView cell)
         {
-            var pos = new Vector3(data.Col, -data.Row);
-            var cell = App.Spawner.Spawn<CellView>(path: PrefabConstants.Cell, position: pos, parent: transform);
-            cell.Init(data.Color.ToColor());
+            cell.gameObject.SetActive(false);
+        }
+
+        private static CellView CreateCellView()
+        {
+            return App.Spawner.Spawn<CellView>(path: PrefabConstants.Cell);
+        }
+
+        private List<CellView> _cells = new();
+
+        private CellView GetCell(Vector3 position, Transform parent, Color color, bool isCollider)
+        {
+            var cell = _pool.Get();
+            var cellTransform = cell.transform;
+            cellTransform.position = position;
+            cellTransform.localScale = _defaultCellScale;
+            cellTransform.SetParent(parent);
+            cell.Collider.enabled = isCollider;
+            cell.Color = color;
+            
+            cell.gameObject.SetActive(true);
+            return cell;
+        }
+
+        public void CreateCell(int col, int row, Action action)
+        {
+            var pos = new Vector3(col, -row);
+            var cell = GetCell(pos, transform, Color.white, true);
             _cells.Add(cell);
 
             if (action != null)
@@ -29,6 +57,18 @@ namespace DotsClassicTest.Board
                 var interactable = cell.gameObject.AddComponent<Interactable>();
                 interactable.Init(action);
             }
+        }
+
+        public void DestroyCellAnim(int id, int row, int col)
+        {
+            var pos = new Vector3(col, -row);
+            var cell = GetCell(pos, transform, _cells[id].Color, false);
+
+            var scaleAnim = cell.transform.DOScale(DestroyAnimCellScale, DestroyAnimDuration);
+            scaleAnim.Play();
+            var fadeAnim = cell.Icon.DOFade(DestroyAnimCellFade, DestroyAnimDuration);
+            fadeAnim.onComplete = delegate { _pool.Release(cell); };
+            fadeAnim.Play();
         }
 
         public void SetCellColor(int id, Color color)
@@ -42,10 +82,8 @@ namespace DotsClassicTest.Board
             var endPos = new Vector3(col, -endRow);
             var cellView = _cells[id];
             cellView.transform.position = startPos;
-            var dot = cellView.transform.DOMove(endPos,1f).SetEase(Ease.OutBounce);
+            var dot = cellView.transform.DOMove(endPos, FallAnimDuration).SetEase(Ease.OutBounce);
             dot.Play();
         }
-
-        
     }
 }

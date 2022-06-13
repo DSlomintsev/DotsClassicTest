@@ -52,18 +52,17 @@ namespace DotsClassicTest.Board
             {
                 for (var col = 0; col < cols; col++)
                 {
-                    var cellData=CreateCellData(row, col);
-                    
                     var rowId = row;
                     var colId = col;
                     
-                    View.CreateCell(cellData, ()=>
+                    View.CreateCell(rowId,colId, ()=>
                     {
                         SelectCell(rowId,colId);
                     });
-                    Model.Cells[row, col] = cellData;
                 }
             }
+            
+            ReFillCells();
         }
 
         private CellData CreateCellData(int row, int col)
@@ -191,7 +190,7 @@ namespace DotsClassicTest.Board
                     if (cells[row, col].State == CellState.DESTROY)
                     {
                         var cellId = BoardUtils.GetCellId(row, col, Config);
-                        //View.DestroyCell(cellId);
+                        View.DestroyCellAnim(cellId, row,col);
                         Model.Cells[row, col] = null;
                     }
                 }
@@ -213,7 +212,7 @@ namespace DotsClassicTest.Board
                         var startRow = 0;
                         if (upperFreeCell == null)
                         {
-                            startRow -= 10;
+                            startRow -= Config.FallHeight;
                             upperFreeCell = CreateCellData(row, col);
                         }
                         else
