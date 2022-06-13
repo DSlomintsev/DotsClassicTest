@@ -8,6 +8,7 @@ namespace DotsClassicTest.Line
 {
     public class CellLinePointWrapper : ILinePointWrapper, IDisposable
     {
+        public event Action<Color> ColorEvent;
         public event Action<Vector3> AddEvent;
         public event Action<Vector3> RemoveEvent;
         
@@ -30,6 +31,10 @@ namespace DotsClassicTest.Line
 
         private void OnAddCell(CellData data)
         {
+            if (_cells.Count == 1)
+            {
+                ColorEvent.Call(data.Color.ToColor());
+            }
             AddEvent.Call(new Vector3(data.Col, -data.Row));
         }
 

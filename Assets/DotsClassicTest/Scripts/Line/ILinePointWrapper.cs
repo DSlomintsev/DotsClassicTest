@@ -7,6 +7,7 @@ namespace DotsClassicTest.Line
 {
     public interface ILinePointWrapper
     {
+        public event Action<Color> ColorEvent;
         public event Action<Vector3> AddEvent;
         public event Action<Vector3> RemoveEvent;
     }

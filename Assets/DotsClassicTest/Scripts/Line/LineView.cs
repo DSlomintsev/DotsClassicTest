@@ -7,6 +7,12 @@ namespace DotsClassicTest.Line
     {
         [SerializeField] private LineRenderer lineRenderer;
 
+        public void SetColor(Color color)
+        {
+            lineRenderer.startColor = color;
+            lineRenderer.endColor = color;
+        }
+
         public void AddPoint(Vector2 pos)
         {
             var isFirstPoint = lineRenderer.positionCount == 0;

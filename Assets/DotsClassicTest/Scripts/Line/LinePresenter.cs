@@ -15,6 +15,7 @@ namespace DotsClassicTest.Line
             {
                 if (_model != null && _model.PointData != null)
                 {
+                    _model.PointData.ColorEvent -= OnColorEvent;
                     _model.PointData.AddEvent -= OnPointAdd;
                     _model.PointData.RemoveEvent -= OnPointRemove;
                 }
@@ -23,6 +24,7 @@ namespace DotsClassicTest.Line
 
                 if (_model != null && _model.PointData != null)
                 {
+                    _model.PointData.ColorEvent += OnColorEvent;
                     _model.PointData.AddEvent += OnPointAdd;
                     _model.PointData.RemoveEvent += OnPointRemove;
                 }
@@ -49,6 +51,11 @@ namespace DotsClassicTest.Line
                     _input.PointerPosition.UpdateEvent += OnPointerPositionUpdate;
                 }
             }
+        }
+
+        private void OnColorEvent(Color color)
+        {
+            View.SetColor(color);
         }
 
         private void OnPointerPositionUpdate(Vector2 position)
