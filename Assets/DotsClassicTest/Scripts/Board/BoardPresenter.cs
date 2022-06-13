@@ -24,6 +24,7 @@ namespace DotsClassicTest.Board
                 {
                     _input.StartSelection -= OnStartSelection;
                     _input.EndSelection -= OnEndSelection;
+                    _input.Replenish -= OnReplenish;
                 }
 
                 _input = value;
@@ -32,6 +33,7 @@ namespace DotsClassicTest.Board
                 {
                     _input.StartSelection += OnStartSelection;
                     _input.EndSelection += OnEndSelection;
+                    _input.Replenish += OnReplenish;
                 }
             }
         }
@@ -122,6 +124,20 @@ namespace DotsClassicTest.Board
         private bool IsSquare()
         {
             return _selectedCells.IsHasDuplicates;
+        }
+
+        private void OnReplenish()
+        {
+            OnEndSelection();
+            for (var row = 0; row < Config.Rows; row++)
+            {
+                for (var col = 0; col < Config.Cols; col++)
+                {
+                    Model.Cells[row, col].State = CellState.DESTROY;
+                }    
+            }
+            DestroyCells();
+            ReFillCells();
         }
 
         #region Selection begavior

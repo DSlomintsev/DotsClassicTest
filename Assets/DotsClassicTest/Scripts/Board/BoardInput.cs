@@ -9,9 +9,11 @@ namespace DotsClassicTest.Board
     {
         private const string SelectionActionName = "Selection";
         private const string PointerPositionActionName = "PointerPosition";
+        private const string ReplenishActionName = "Replenish";
         
         public event Action StartSelection;
         public event Action EndSelection;
+        public event Action Replenish;
         public Vector2 MousePosition { get; private set; }
 
         private PlayerInput _playerInput;
@@ -32,6 +34,7 @@ namespace DotsClassicTest.Board
         {
             _playerInput.actions[SelectionActionName].performed += OnStartSelection;
             _playerInput.actions[SelectionActionName].canceled += OnEndSelection;
+            _playerInput.actions[ReplenishActionName].performed += OnReplenish;
 
             _playerInput.actions[PointerPositionActionName].performed += OnPointerPositionChange;
         }
@@ -40,6 +43,7 @@ namespace DotsClassicTest.Board
         {
             _playerInput.actions[SelectionActionName].performed -= OnStartSelection;
             _playerInput.actions[SelectionActionName].canceled -= OnEndSelection;
+            _playerInput.actions[ReplenishActionName].performed -= OnReplenish;
 
             _playerInput.actions[PointerPositionActionName].performed -= OnPointerPositionChange;
         }
@@ -52,6 +56,11 @@ namespace DotsClassicTest.Board
         private void OnEndSelection(InputAction.CallbackContext obj)
         {
             EndSelection.Call();
+        }
+        
+        private void OnReplenish(InputAction.CallbackContext obj)
+        {
+            Replenish.Call();
         }
 
         private void OnPointerPositionChange(InputAction.CallbackContext obj)
