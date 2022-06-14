@@ -3,11 +3,11 @@ using DotsClassicTest.Utils;
 
 namespace DotsClassicTest.Board
 {
-    public class BoardUtils
+    public static class BoardUtils
     {
-        public static int GetCellId(int row, int col, BoardConfig config)
+        public static int GetCellId(int row, int col, int rows)
         {
-            return row * config.Rows + col;
+            return row * rows + col;
         }
 
         public static void MarkSquaredCellsToDestroy(bool isSquare, CellData[,] cells, ColorType color)
@@ -42,6 +42,16 @@ namespace DotsClassicTest.Board
         public static void SwitchCells(CellData[,] cells, int rowA,int colA,int rowB,int colB)
         {
             (cells[rowA,colA], cells[rowB, colB]) = (cells[rowB, colB], cells[rowA,colA]);
+        }
+
+        public static int GetRows(this CellData[,] cells)
+        {
+            return cells.GetLength(0);
+        }
+        
+        public static int GetCols(this CellData[,] cells)
+        {
+            return cells.GetLength(1);
         }
     }
 }

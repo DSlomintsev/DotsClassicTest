@@ -211,7 +211,7 @@ namespace DotsClassicTest.Board
             {
                 if (cell.State == CellState.DESTROY)
                 {
-                    var cellId = BoardUtils.GetCellId(cell.Row, cell.Col, Config);
+                    var cellId = BoardUtils.GetCellId(cell.Row, cell.Col, cells.GetRows());
                     View.DestroyCellAnim(cellId, cell.Row, cell.Col);
                     Model.Cells[cell.Row, cell.Col] = null;
                 }
@@ -221,8 +221,8 @@ namespace DotsClassicTest.Board
         private void ReFillCells()
         {
             var cells = Model.Cells;
-            var rows = cells.GetLength(0);
-            var cols = cells.GetLength(1);
+            var rows = cells.GetRows();
+            var cols = cells.GetCols();
             for (var col = 0; col < cols; col++)
             {
                 for (var row = rows - 1; row >= 0; row--)
@@ -246,7 +246,7 @@ namespace DotsClassicTest.Board
                         freeUpperCell.Row = row;
                         freeUpperCell.Col = col;
 
-                        var cellId = BoardUtils.GetCellId(row, col, Config);
+                        var cellId = BoardUtils.GetCellId(row, col, cells.GetRows());
                         View.SetCellColor(cellId, freeUpperCell.Color.ToColor());
                         View.FallCellAnim(cellId, startRow, row, col);
                     }
@@ -254,13 +254,16 @@ namespace DotsClassicTest.Board
             }
         }
 
-        private void ReplenishCellWithColors(List<ColorType> colors)
+        public void ReplenishCellWithColors(List<ColorType> colors)
         {
             var cells = Model.Cells;
             var index = 0;
             foreach (var cell in cells)
             {
                 cell.Color = colors[index];
+                var cellId = BoardUtils.GetCellId(cell.Row, cell.Col, cells.GetRows());
+                View.SetCellColor(cellId, cell.Color.ToColor());
+                
                 index++;
             }
         }
