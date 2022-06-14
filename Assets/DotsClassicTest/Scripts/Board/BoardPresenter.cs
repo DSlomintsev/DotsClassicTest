@@ -185,7 +185,6 @@ namespace DotsClassicTest.Board
         
         public void EndSelection()
         {
-            Debug.Log("CHECK-"+IsEnoughSelectedCells);
             if (IsEnoughSelectedCells)
             {
                 BoardUtils.MarkSquaredCellsToDestroy(_isSquare, Model.Cells, _selectedCells.Peek().Color);
