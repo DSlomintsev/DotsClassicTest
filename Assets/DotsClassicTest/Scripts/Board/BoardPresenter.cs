@@ -14,7 +14,7 @@ namespace DotsClassicTest.Board
         public BoardConfig Config { get; set; }
         public Camera Camera { get; set; }
         public BoardModel Model { get; set; }
-        public BoardView View { get; set; }
+        public IBoardView View { get; set; }
         private BoardInput _input;
 
         public BoardInput Input

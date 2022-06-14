@@ -10,7 +10,7 @@ using UnityEngine.Pool;
 
 namespace DotsClassicTest.Board
 {
-    public class BoardView : MonoBehaviour
+    public class BoardView : MonoBehaviour,IBoardView
     {
         private readonly Vector3 _defaultCellScale = Vector3.one * .7f;
         private const float DestroyAnimCellScale = 1f;
