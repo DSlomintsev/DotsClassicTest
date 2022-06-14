@@ -12,6 +12,7 @@ namespace DotsClassicTest.Board
 {
     public class BoardPresenter
     {
+        public int Points { get; set; } = 0;
         public BoardConfig Config { get; set; }
         public Camera Camera { get; set; }
         public BoardModel Model { get; set; }
@@ -56,6 +57,7 @@ namespace DotsClassicTest.Board
         
         private void FillView(int rows, int cols)
         {
+            View.Clear();
             for (var row = 0; row < rows; row++)
             {
                 for (var col = 0; col < cols; col++)
@@ -183,6 +185,7 @@ namespace DotsClassicTest.Board
         
         public void EndSelection()
         {
+            Debug.Log("CHECK-"+IsEnoughSelectedCells);
             if (IsEnoughSelectedCells)
             {
                 BoardUtils.MarkSquaredCellsToDestroy(_isSquare, Model.Cells, _selectedCells.Peek().Color);
@@ -190,6 +193,7 @@ namespace DotsClassicTest.Board
                 foreach (var cell in _selectedCells)
                 {
                     cell.State = CellState.DESTROY;
+                    Points++;
                 }
             }
 
@@ -254,17 +258,21 @@ namespace DotsClassicTest.Board
             }
         }
 
-        public void ReplenishCellWithColors(List<ColorType> colors)
+        public void ReplenishCellWithColors(List<ColorType> colors,int rowShift,int colShift, int rows,int cols)
         {
             var cells = Model.Cells;
             var index = 0;
-            foreach (var cell in cells)
+            for (var i = rowShift; i < rows; i++)
             {
-                cell.Color = colors[index];
-                var cellId = BoardUtils.GetCellId(cell.Row, cell.Col, cells.GetRows());
-                View.SetCellColor(cellId, cell.Color.ToColor());
+                for (var j = colShift; j < cols; j++)
+                {
+                    var cell = cells[i,j];
+                    cell.Color = colors[index];
+                    var cellId = BoardUtils.GetCellId(cell.Row, cell.Col, cells.GetRows());
+                    View.SetCellColor(cellId, cell.Color.ToColor());
                 
-                index++;
+                    index++;    
+                }
             }
         }
 

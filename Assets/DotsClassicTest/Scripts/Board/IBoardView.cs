@@ -12,5 +12,6 @@ namespace DotsClassicTest.Board
         public void RemoveHighlight();
         public void DestroyCellAnim(int id, int row, int col);
         public void FallCellAnim(int id, int startRow, int endRow, int col);
+        public void Clear();
     }
 }

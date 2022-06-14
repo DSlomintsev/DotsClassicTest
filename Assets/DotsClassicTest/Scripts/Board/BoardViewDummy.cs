@@ -29,5 +29,9 @@ namespace DotsClassicTest.Board
         public void FallCellAnim(int id, int startRow, int endRow, int col)
         {
         }
+        
+        public void Clear()
+        {
+        }
     }
 }

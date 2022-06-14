@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DotsClassicTest.Board;
 using DotsClassicTest.Constants;
 using DotsClassicTest.Line;
@@ -29,6 +28,14 @@ namespace DotsClassicTest
 
             _board = CreateBoard();
             _board.InitBoard(_board.Config.Rows,_board.Config.Cols);
+            /*_board.InitBoard(3,3);
+            var colors = new List<ColorType>()
+            {
+                ColorType.RED, ColorType.RED, ColorType.RED,
+                ColorType.BLUE, ColorType.BLUE, ColorType.BLUE,
+                ColorType.GREEN, ColorType.GREEN, ColorType.GREEN
+            };
+            _board.ReplenishCellWithColors(colors,0,0,3,3);*/
 
             _line = CreateLine(new CellLinePointWrapper(_board.SelectedCells));
         }

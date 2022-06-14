@@ -106,5 +106,14 @@ namespace DotsClassicTest.Board
             var dot = cellView.transform.DOMove(endPos, FallAnimDuration).SetEase(Ease.OutBounce);
             dot.Play();
         }
+        
+        public void Clear()
+        {
+            foreach (var cell in _cells)
+            {
+                _pool.Release(cell);
+            }
+            _cells.Clear();
+        }
     }
 }

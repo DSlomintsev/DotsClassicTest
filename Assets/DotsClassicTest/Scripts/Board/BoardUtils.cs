@@ -12,11 +12,11 @@ namespace DotsClassicTest.Board
 
         public static void MarkSquaredCellsToDestroy(bool isSquare, CellData[,] cells, ColorType color)
         {
-            if (!isSquare) return;
+            if (isSquare) return;
 
             foreach (var cell in cells)
             {
-                if (cell.Color != color) continue;
+                if (cell.Color != color || cell.State == CellState.DESTROY) continue;
 
                 cell.State = CellState.DESTROY;
             }
