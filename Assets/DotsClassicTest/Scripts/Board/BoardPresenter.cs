@@ -83,7 +83,7 @@ namespace DotsClassicTest.Board
             return result;
         }
 
-        private void SelectCell(int row, int col)
+        public void SelectCell(int row, int col)
         {
             var cellData = Model.Cells[row, col];
 
@@ -174,6 +174,11 @@ namespace DotsClassicTest.Board
         private void OnEndSelection()
         {
             App.CoroutineRunner.StopCoroutine(_selectionCor);
+            EndSelection();
+        }
+        
+        public void EndSelection()
+        {
             if (IsEnoughSelectedCells)
             {
                 BoardUtils.MarkSquaredCellsToDestroy(_isSquare, Model.Cells, _selectedCells.Peek().Color);
