@@ -1,11 +1,5 @@
 using System;
-using System.Collections.Generic;
-using DG.Tweening;
-using DotsClassicTest.Cell;
-using DotsClassicTest.Constants;
-using DotsClassicTest.Interactables;
 using UnityEngine;
-using UnityEngine.Pool;
 
 
 namespace DotsClassicTest.Board

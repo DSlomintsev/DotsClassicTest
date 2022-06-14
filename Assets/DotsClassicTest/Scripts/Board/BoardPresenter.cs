@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using DotsClassicTest.Cell;
 using DotsClassicTest.Interactables;
 using DotsClassicTest.Utils;
@@ -44,13 +45,17 @@ namespace DotsClassicTest.Board
         private ActiveStackData<CellData> _selectedCells = new();
         public ActiveStackData<CellData> SelectedCells => _selectedCells;
 
-        public void FillBoard()
+        public void InitBoard(int rows, int cols)
         {
-            var rows = Config.Rows;
-            var cols = Config.Cols;
-
+            FillView(rows,cols);
+                
             Model.Cells = new CellData[rows, cols];
-
+            
+            ReFillCells();
+        }
+        
+        private void FillView(int rows, int cols)
+        {
             for (var row = 0; row < rows; row++)
             {
                 for (var col = 0; col < cols; col++)
@@ -61,27 +66,8 @@ namespace DotsClassicTest.Board
                     View.CreateCell(rowId, colId, () => { SelectCell(rowId, colId); });
                 }
             }
-
-            ReFillCells();
         }
-
-        private bool IsPossibleToPeekCell(CellData cellData)
-        {
-            var result = true;
-
-            if (_selectedCells.Count > 0)
-            {
-                var prevCell = _selectedCells.Peek();
-
-                var isAnotherCell = prevCell != cellData;
-                var isSameColor = prevCell.Color == cellData.Color;
-                var isCellNear = Math.Abs(prevCell.Col - cellData.Col) + Math.Abs(prevCell.Row - cellData.Row) < 2;
-
-                result = isAnotherCell && isSameColor && isCellNear;
-            }
-
-            return result;
-        }
+        
 
         public void SelectCell(int row, int col)
         {
@@ -107,6 +93,24 @@ namespace DotsClassicTest.Board
                     CheckSquare();
                 }
             }
+        }
+        
+        private bool IsPossibleToPeekCell(CellData cellData)
+        {
+            var result = true;
+
+            if (_selectedCells.Count > 0)
+            {
+                var prevCell = _selectedCells.Peek();
+
+                var isAnotherCell = prevCell != cellData;
+                var isSameColor = prevCell.Color == cellData.Color;
+                var isCellNear = Math.Abs(prevCell.Col - cellData.Col) + Math.Abs(prevCell.Row - cellData.Row) < 2;
+
+                result = isAnotherCell && isSameColor && isCellNear;
+            }
+
+            return result;
         }
 
         private void CheckSquare()
@@ -217,9 +221,11 @@ namespace DotsClassicTest.Board
         private void ReFillCells()
         {
             var cells = Model.Cells;
-            for (var col = 0; col < Config.Cols; col++)
+            var rows = cells.GetLength(0);
+            var cols = cells.GetLength(1);
+            for (var col = 0; col < cols; col++)
             {
-                for (var row = Config.Rows - 1; row >= 0; row--)
+                for (var row = rows - 1; row >= 0; row--)
                 {
                     var cell = cells[row, col];
                     if (cell == null)
@@ -245,6 +251,17 @@ namespace DotsClassicTest.Board
                         View.FallCellAnim(cellId, startRow, row, col);
                     }
                 }
+            }
+        }
+
+        private void ReplenishCellWithColors(List<ColorType> colors)
+        {
+            var cells = Model.Cells;
+            var index = 0;
+            foreach (var cell in cells)
+            {
+                cell.Color = colors[index];
+                index++;
             }
         }
 

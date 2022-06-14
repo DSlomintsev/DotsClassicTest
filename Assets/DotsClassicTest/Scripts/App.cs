@@ -26,10 +26,10 @@ namespace DotsClassicTest
         {
             InitUtils();
 
-            _board = InitBoard();
-            _board.FillBoard();
+            _board = CreateBoard();
+            _board.InitBoard(_board.Config.Rows,_board.Config.Cols);
 
-            _line = InitLine(new CellLinePointWrapper(_board.SelectedCells));
+            _line = CreateLine(new CellLinePointWrapper(_board.SelectedCells));
         }
 
         private void InitUtils()
@@ -39,7 +39,7 @@ namespace DotsClassicTest
             PlayerInput = Spawner.Spawn<PlayerInput>(PrefabConstants.PlayerInput);
         }
 
-        private BoardPresenter InitBoard()
+        private BoardPresenter CreateBoard()
         {
             return new BoardPresenter
             {
@@ -51,7 +51,7 @@ namespace DotsClassicTest
             };
         }
 
-        private LinePresenter InitLine(ILinePointWrapper linePointWrapper)
+        private LinePresenter CreateLine(ILinePointWrapper linePointWrapper)
         {
             return new LinePresenter
             {
