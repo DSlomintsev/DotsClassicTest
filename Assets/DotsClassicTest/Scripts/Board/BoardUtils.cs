@@ -9,37 +9,39 @@ namespace DotsClassicTest.Board
         {
             return row * config.Rows + col;
         }
-        
-        public static void MarkSquaredCellsToDestroy(CellData[,] cells, ColorType color)
+
+        public static void MarkSquaredCellsToDestroy(bool isSquare, CellData[,] cells, ColorType color)
         {
-            for (var i = 0; i < cells.GetLength(0); i++)
+            if (!isSquare) return;
+
+            foreach (var cell in cells)
             {
-                for (var j = 0; j < cells.GetLength(1); j++)
-                {
-                    var cell = cells[i, j];
-                    if (cell.Color == color)
-                    {
-                        cell.State = CellState.DESTROY;
-                    }
-                }
+                if (cell.Color != color) continue;
+
+                cell.State = CellState.DESTROY;
             }
         }
-        
-        public static CellData FindFreeUpperCell(CellData[,] cells, int startRow,int col)
-        {
-            CellData result = null;
 
-            for (var row = startRow; row >= 0; row--)
+        public static bool FreeUpperCell(CellData[,] cells, int startRow, int col, out CellData freeCell)
+        {
+            freeCell = null;
+
+            for (var row = startRow - 1; row >= 0; row--)
             {
                 var cell = cells[row, col];
-                if (cell!=null)
+                if (cell != null)
                 {
-                    result = cell;
+                    freeCell = cell;
                     break;
                 }
             }
 
-            return result;
+            return freeCell != null;
+        }
+        
+        public static void SwitchCells(CellData[,] cells, int rowA,int colA,int rowB,int colB)
+        {
+            (cells[rowA,colA], cells[rowB, colB]) = (cells[rowB, colB], cells[rowA,colA]);
         }
     }
 }

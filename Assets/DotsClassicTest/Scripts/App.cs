@@ -16,25 +16,30 @@ namespace DotsClassicTest
 
         public static ICoroutineRunner CoroutineRunner;
         public static ISpawner Spawner;
+        public static PlayerInput PlayerInput;
 
         private BoardPresenter _board;
         private LinePresenter _line;
+        
 
         private void Awake()
         {
-            CoroutineRunner = gameObject.AddComponent<CoroutineRunner>();
-            Spawner = new ResourceSpawner();
+            InitUtils();
 
-            var playerInput = Spawner.Spawn<PlayerInput>(PrefabConstants.PlayerInput);
-
-            _board = InitBoard(playerInput);
-
+            _board = InitBoard();
             _board.FillBoard();
 
-            _line = InitLine(playerInput, new CellLinePointWrapper(_board.SelectedCells));
+            _line = InitLine(new CellLinePointWrapper(_board.SelectedCells));
         }
 
-        private BoardPresenter InitBoard(PlayerInput playerInput)
+        private void InitUtils()
+        {
+            CoroutineRunner = gameObject.AddComponent<CoroutineRunner>();
+            Spawner = new ResourceSpawner();
+            PlayerInput = Spawner.Spawn<PlayerInput>(PrefabConstants.PlayerInput);
+        }
+
+        private BoardPresenter InitBoard()
         {
             return new BoardPresenter
             {
@@ -42,11 +47,11 @@ namespace DotsClassicTest
                 Config = new BoardConfig(),
                 Model = new BoardModel(),
                 View = Spawner.Spawn<BoardView>(PrefabConstants.Board),
-                Input = new BoardInput(playerInput)
+                Input = new BoardInput(PlayerInput)
             };
         }
 
-        private LinePresenter InitLine(PlayerInput playerInput, ILinePointWrapper linePointWrapper)
+        private LinePresenter InitLine(ILinePointWrapper linePointWrapper)
         {
             return new LinePresenter
             {
@@ -56,7 +61,7 @@ namespace DotsClassicTest
                     PointData = linePointWrapper
                 },
                 View = Spawner.Spawn<LineView>(PrefabConstants.Line),
-                Input = new LineInput(playerInput),
+                Input = new LineInput(PlayerInput),
             };
         }
     }

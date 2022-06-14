@@ -61,7 +61,7 @@ namespace DotsClassicTest.Board
         
         private List<Tweener> _squareHighlight = new ();
 
-        public void Highlight(Color color)
+        public void AddHighlight(Color color)
         {
             var likeColorCells = _cells.FindAll(cell => cell.Color == color);
             likeColorCells.ForEach(cell =>

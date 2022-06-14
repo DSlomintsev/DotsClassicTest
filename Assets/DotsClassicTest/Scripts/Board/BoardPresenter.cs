@@ -16,6 +16,7 @@ namespace DotsClassicTest.Board
         public BoardModel Model { get; set; }
         public BoardView View { get; set; }
         private BoardInput _input;
+
         public BoardInput Input
         {
             set
@@ -40,7 +41,7 @@ namespace DotsClassicTest.Board
 
         private bool _isSquare;
         private CellData _preLast;
-        private ActiveStackData<CellData> _selectedCells = new ();
+        private ActiveStackData<CellData> _selectedCells = new();
         public ActiveStackData<CellData> SelectedCells => _selectedCells;
 
         public void FillBoard()
@@ -56,25 +57,12 @@ namespace DotsClassicTest.Board
                 {
                     var rowId = row;
                     var colId = col;
-                    
-                    View.CreateCell(rowId,colId, ()=>
-                    {
-                        SelectCell(rowId,colId);
-                    });
+
+                    View.CreateCell(rowId, colId, () => { SelectCell(rowId, colId); });
                 }
             }
-            
-            ReFillCells();
-        }
 
-        private CellData CreateCellData(int row, int col)
-        {
-            return new CellData
-            {
-                Row = row,
-                Col = col,
-                Color = Config.Colors.GetRandom()
-            };
+            ReFillCells();
         }
 
         private bool IsPossibleToPeekCell(CellData cellData)
@@ -84,11 +72,11 @@ namespace DotsClassicTest.Board
             if (_selectedCells.Count > 0)
             {
                 var prevCell = _selectedCells.Peek();
-                
+
                 var isAnotherCell = prevCell != cellData;
                 var isSameColor = prevCell.Color == cellData.Color;
                 var isCellNear = Math.Abs(prevCell.Col - cellData.Col) + Math.Abs(prevCell.Row - cellData.Row) < 2;
-                
+
                 result = isAnotherCell && isSameColor && isCellNear;
             }
 
@@ -120,30 +108,26 @@ namespace DotsClassicTest.Board
                 }
             }
         }
-        
+
         private void CheckSquare()
         {
-            var isSquare = IsSquare();
-                    
-            if (_isSquare != isSquare)
+            var isSquare = IsSquare;
+
+            if (_isSquare == isSquare) return;
+
+            _isSquare = isSquare;
+
+            if (isSquare)
             {
-                _isSquare = isSquare;
-                if (isSquare)
-                {
-                    View.Highlight(_selectedCells.Peek().Color.ToColor());
-                }
-                else
-                {
-                    View.RemoveHighlight();
-                }
-                    
+                View.AddHighlight(_selectedCells.Peek().Color.ToColor());
+            }
+            else
+            {
+                View.RemoveHighlight();
             }
         }
 
-        private bool IsSquare()
-        {
-            return _selectedCells.IsHasDuplicates;
-        }
+        private bool IsSquare => _selectedCells.IsHasDuplicates;
 
         private void OnReplenish()
         {
@@ -152,6 +136,7 @@ namespace DotsClassicTest.Board
             {
                 cellData.State = CellState.DESTROY;
             }
+
             DestroyCells();
             ReFillCells();
         }
@@ -173,13 +158,13 @@ namespace DotsClassicTest.Board
             {
                 var ray = Camera.ScreenPointToRay(_input.MousePosition);
                 var hit = Physics2D.Raycast(ray.origin, ray.direction, float.MaxValue, LayerUtils.InteractLayer);
-                
+
                 if (hit.collider != null && prevCollider != hit.collider)
                 {
                     prevCollider = hit.collider;
 
                     var interactable = hit.collider.GetComponent(typeof(IInteractable)) as IInteractable;
-                    interactable.DoAction();
+                    interactable?.DoAction();
                 }
 
                 yield return delay;
@@ -189,19 +174,16 @@ namespace DotsClassicTest.Board
         private void OnEndSelection()
         {
             App.CoroutineRunner.StopCoroutine(_selectionCor);
-            if (IsEnoughtSelectedCells)
+            if (IsEnoughSelectedCells)
             {
-                if (_isSquare)
-                {
-                    BoardUtils.MarkSquaredCellsToDestroy(Model.Cells, _selectedCells.Peek().Color);
-                }
-                
+                BoardUtils.MarkSquaredCellsToDestroy(_isSquare, Model.Cells, _selectedCells.Peek().Color);
+
                 foreach (var cell in _selectedCells)
                 {
                     cell.State = CellState.DESTROY;
                 }
             }
-            
+
             _selectedCells.Clear();
             _preLast = null;
             CheckSquare();
@@ -209,8 +191,9 @@ namespace DotsClassicTest.Board
             DestroyCells();
             ReFillCells();
         }
+
         #endregion
-        
+
         private void DestroyCells()
         {
             var cells = Model.Cells;
@@ -225,7 +208,7 @@ namespace DotsClassicTest.Board
                 }
             }
         }
-        
+
         private void ReFillCells()
         {
             var cells = Model.Cells;
@@ -236,33 +219,30 @@ namespace DotsClassicTest.Board
                     var cell = cells[row, col];
                     if (cell == null)
                     {
-                        var upperFreeCell = BoardUtils.FindFreeUpperCell(Model.Cells, row - 1, col);
-
                         var startRow = 0;
-                        if (upperFreeCell == null)
+                        if (BoardUtils.FreeUpperCell(cells, row, col, out var freeUpperCell))
                         {
-                            startRow -= Config.FallHeight;
-                            upperFreeCell = CreateCellData(row, col);
+                            startRow = freeUpperCell.Row;
+                            BoardUtils.SwitchCells(cells, row, col, freeUpperCell.Row, freeUpperCell.Col);
                         }
                         else
                         {
-                            startRow = upperFreeCell.Row;
+                            startRow -= Config.FallHeight;
+                            freeUpperCell = new CellData { Color = Config.Colors.GetRandom() };
+                            cells[row, col] = freeUpperCell;
                         }
 
-                        cells[row, col] = upperFreeCell;
-                        cells[upperFreeCell.Row, upperFreeCell.Col] = null;
+                        freeUpperCell.Row = row;
+                        freeUpperCell.Col = col;
 
-                        upperFreeCell.Row = row;
-                        upperFreeCell.Col = col;
-                        Model.Cells[row, col] = upperFreeCell;
                         var cellId = BoardUtils.GetCellId(row, col, Config);
-                        View.SetCellColor(cellId, upperFreeCell.Color.ToColor());
+                        View.SetCellColor(cellId, freeUpperCell.Color.ToColor());
                         View.FallCellAnim(cellId, startRow, row, col);
                     }
                 }
             }
         }
-        
-        private bool IsEnoughtSelectedCells => _selectedCells.Count >= Config.MinCellRequiredToSelect;
+
+        private bool IsEnoughSelectedCells => _selectedCells.Count >= Config.MinCellRequiredToSelect;
     }
 }
