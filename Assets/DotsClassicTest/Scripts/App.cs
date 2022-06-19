@@ -29,7 +29,7 @@ namespace DotsClassicTest
             _board = CreateBoard();
             _board.InitBoard(_board.Config.Rows,_board.Config.Cols);
 
-            _line = CreateLine(new CellLinePointWrapper(_board.SelectedCells));
+            _line = CreateLine(new CellLinePointWrapper(_board.Model.SelectedCells));
         }
 
         private void InitUtils()

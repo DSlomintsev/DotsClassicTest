@@ -28,6 +28,6 @@ public class TestTopRow
         board.SelectCell(0,1);
         board.EndSelection();
         
-        Assert.AreEqual(2,board.Points);
+        Assert.AreEqual(2,board.Model.Points);
     }
 }

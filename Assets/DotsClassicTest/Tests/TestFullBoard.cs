@@ -34,6 +34,6 @@ public class TestFullBoard
         board.SelectCell(2,2);
         board.EndSelection();
         
-        Assert.AreEqual(9,board.Points);
+        Assert.AreEqual(9,board.Model.Points);
     }
 }

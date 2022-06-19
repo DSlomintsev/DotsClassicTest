@@ -29,7 +29,7 @@ public class Test2InRowAndDiagonal
         board.SelectCell(1,2);
         board.EndSelection();
         
-        Assert.AreEqual(2,board.Points);
+        Assert.AreEqual(2,board.Model.Points);
     }
 
     [UnityTest]

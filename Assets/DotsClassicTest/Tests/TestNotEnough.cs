@@ -27,7 +27,7 @@ public class TestNotEnough
         board.SelectCell(0,0);
         board.EndSelection();
         
-        Assert.AreEqual(0,board.Points);
+        Assert.AreEqual(0,board.Model.Points);
     }
 
     [UnityTest]

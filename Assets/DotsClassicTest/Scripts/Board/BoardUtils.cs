@@ -1,5 +1,6 @@
 using DotsClassicTest.Cell;
 using DotsClassicTest.Utils;
+using DotsClassicTest.Utils.Data;
 
 namespace DotsClassicTest.Board
 {
@@ -10,15 +11,16 @@ namespace DotsClassicTest.Board
             return row * rows + col;
         }
 
-        public static void MarkSquaredCellsToDestroy(bool isSquare, CellData[,] cells, ColorType color)
+        public static void MarkSquaredCellsToDestroy(bool isSquare, CellData[,] cells,
+            ActiveStackData<CellData> selectedCells, ColorType color)
         {
-            if (isSquare) return;
+            if (!isSquare) return;
 
             foreach (var cell in cells)
             {
-                if (cell.Color != color || cell.State == CellState.DESTROY) continue;
+                if (cell.Color != color || cell.State == CellState.DESTROY || selectedCells.Contains(cell)) continue;
 
-                cell.State = CellState.DESTROY;
+                selectedCells.Push(cell);
             }
         }
 

@@ -33,6 +33,6 @@ public class TestTwoLinesFall
         board.SelectCell(2,2);
         board.EndSelection();
         
-        Assert.AreEqual(5,board.Points);
+        Assert.AreEqual(5,board.Model.Points);
     }
 }

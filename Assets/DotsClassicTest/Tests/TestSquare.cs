@@ -20,7 +20,7 @@ public class TestSquare
         var colors = new List<ColorType>
         {
             ColorType.RED,ColorType.RED,ColorType.GREEN,
-            ColorType.RED,ColorType.RED,ColorType.GREEN,
+            ColorType.RED,ColorType.RED,ColorType.RED,
             ColorType.BLUE,ColorType.BLUE,ColorType.RED,
         };
         board.ReplenishCellWithColors(colors,0,0,3,3);
@@ -31,7 +31,7 @@ public class TestSquare
         board.SelectCell(0,0);
         board.EndSelection();
         
-        Assert.AreEqual(5,board.Points);
+        Assert.AreEqual(7,board.Model.Points);
     }
 
     [UnityTest]

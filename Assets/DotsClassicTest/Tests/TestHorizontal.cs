@@ -28,6 +28,6 @@ public class TestHorizontal
         board.SelectCell(2,0);
         board.EndSelection();
         
-        Assert.AreEqual(3,board.Points);
+        Assert.AreEqual(3,board.Model.Points);
     }
 }

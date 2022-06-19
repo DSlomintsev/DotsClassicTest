@@ -12,6 +12,8 @@ namespace DotsClassicTest.Utils.Data
         public event Action<T> AddEvent;
         public event Action<T> RemoveEvent;
 
+        public T PreLast;
+
         private Stack<T> value;
 
         public ActiveStackData(Stack<T> stack = null)
@@ -58,6 +60,7 @@ namespace DotsClassicTest.Utils.Data
         
         public new void Clear()
         {
+            PreLast = default;
             if (value.Count == 0) return;
 
             foreach (var item in value)

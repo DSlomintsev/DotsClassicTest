@@ -29,7 +29,7 @@ public class Test3InRow
         board.SelectCell(0,2);
         board.EndSelection();
         
-        Assert.AreEqual(3,board.Points);
+        Assert.AreEqual(3,board.Model.Points);
     }
 
     [UnityTest]

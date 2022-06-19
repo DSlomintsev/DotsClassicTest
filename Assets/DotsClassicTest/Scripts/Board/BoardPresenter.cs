@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using DotsClassicTest.Cell;
 using DotsClassicTest.Interactables;
 using DotsClassicTest.Utils;
-using DotsClassicTest.Utils.Data;
 using UnityEngine;
 
 
@@ -12,7 +11,6 @@ namespace DotsClassicTest.Board
 {
     public class BoardPresenter
     {
-        public int Points { get; set; } = 0;
         public BoardConfig Config { get; set; }
         public Camera Camera { get; set; }
         public BoardModel Model { get; set; }
@@ -40,11 +38,6 @@ namespace DotsClassicTest.Board
                 }
             }
         }
-
-        private bool _isSquare;
-        private CellData _preLast;
-        private ActiveStackData<CellData> _selectedCells = new();
-        public ActiveStackData<CellData> SelectedCells => _selectedCells;
 
         public void InitBoard(int rows, int cols)
         {
@@ -77,20 +70,20 @@ namespace DotsClassicTest.Board
 
             if (IsPossibleToPeekCell(cellData))
             {
-                if (cellData != _preLast)
+                if (cellData != Model.SelectedCells.PreLast)
                 {
-                    _selectedCells.Push(cellData);
+                    Model.SelectedCells.Push(cellData);
                 }
                 else
                 {
-                    _selectedCells.Pop();
+                    Model.SelectedCells.Pop();
                 }
 
-                if (_selectedCells.Count > 1)
+                if (Model.SelectedCells.Count > 1)
                 {
-                    var tempCell = _selectedCells.Pop();
-                    _preLast = _selectedCells.Peek();
-                    _selectedCells.Push(tempCell);
+                    var tempCell = Model.SelectedCells.Pop();
+                    Model.SelectedCells.PreLast = Model.SelectedCells.Peek();
+                    Model.SelectedCells.Push(tempCell);
 
                     CheckSquare();
                 }
@@ -101,9 +94,9 @@ namespace DotsClassicTest.Board
         {
             var result = true;
 
-            if (_selectedCells.Count > 0)
+            if (Model.SelectedCells.Count > 0)
             {
-                var prevCell = _selectedCells.Peek();
+                var prevCell = Model.SelectedCells.Peek();
 
                 var isAnotherCell = prevCell != cellData;
                 var isSameColor = prevCell.Color == cellData.Color;
@@ -119,13 +112,13 @@ namespace DotsClassicTest.Board
         {
             var isSquare = IsSquare;
 
-            if (_isSquare == isSquare) return;
+            if (Model.IsSquare == isSquare) return;
 
-            _isSquare = isSquare;
+            Model.IsSquare = isSquare;
 
             if (isSquare)
             {
-                View.AddHighlight(_selectedCells.Peek().Color.ToColor());
+                View.AddHighlight(Model.SelectedCells.Peek().Color.ToColor());
             }
             else
             {
@@ -133,7 +126,7 @@ namespace DotsClassicTest.Board
             }
         }
 
-        private bool IsSquare => _selectedCells.IsHasDuplicates;
+        private bool IsSquare => Model.SelectedCells.IsHasDuplicates;
 
         private void OnReplenish()
         {
@@ -187,17 +180,16 @@ namespace DotsClassicTest.Board
         {
             if (IsEnoughSelectedCells)
             {
-                BoardUtils.MarkSquaredCellsToDestroy(_isSquare, Model.Cells, _selectedCells.Peek().Color);
+                BoardUtils.MarkSquaredCellsToDestroy(Model.IsSquare, Model.Cells,Model.SelectedCells, Model.SelectedCells.Peek().Color);
 
-                foreach (var cell in _selectedCells)
+                foreach (var cell in Model.SelectedCells)
                 {
                     cell.State = CellState.DESTROY;
-                    Points++;
+                    Model.Points++;
                 }
             }
 
-            _selectedCells.Clear();
-            _preLast = null;
+            Model.SelectedCells.Clear();
             CheckSquare();
 
             DestroyCells();
@@ -275,6 +267,6 @@ namespace DotsClassicTest.Board
             }
         }
 
-        private bool IsEnoughSelectedCells => _selectedCells.Count >= Config.MinCellRequiredToSelect;
+        private bool IsEnoughSelectedCells => Model.SelectedCells.Count >= Config.MinCellRequiredToSelect;
     }
 }
